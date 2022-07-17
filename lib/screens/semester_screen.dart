@@ -7,7 +7,7 @@ class SemesterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Semester screen"),),
+      appBar: AppBar(title: Text("Semester $number"),),
       body: const Center(child: Text("This is Semester Screen"),),
     );
   }

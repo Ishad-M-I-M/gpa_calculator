@@ -9,9 +9,9 @@ class SemesterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onTap(context),
-      child: const Card(
+      child: Card(
         color: Colors.deepPurpleAccent,
-        child: Text("Semester 1"),
+        child: Text("Semester $semester"),
       ),
     );
   }

@@ -41,8 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             child: GridView.count(
               crossAxisCount: 1,
+              childAspectRatio: 3,
               children: semesters.map((sem){
-                return SemesterCard(semester: sem.semester, onTap: ()=> navigateToSemesterScreen(context, sem.semester),);
+                return SemesterCard(semester: sem.semester, onTap: (ctx)=> navigateToSemesterScreen(context, sem.semester),);
               }).toList(),
             ),
           ),
