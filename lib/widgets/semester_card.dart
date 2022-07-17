@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Semester extends StatelessWidget {
+class SemesterCard extends StatelessWidget {
   final int semester;
   final Function onTap;
-  const Semester({required this.semester, required this.onTap, Key? key}) : super(key: key);
+  const SemesterCard({required this.semester, required this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
