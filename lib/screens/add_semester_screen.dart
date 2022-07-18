@@ -28,10 +28,12 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
         setState(() {
           modules.add(module);
         });
-        modules.add(module);
       }, );
     });
   }
+
+  double get totalCredits => modules.fold(0, (sum, module) => sum + module.credits);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +82,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                     .toList(),
               ),
             ),
+            Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
             ElevatedButton(onPressed: ()=>displayAddModuleWindow(context), child: const Text("Add a Module"))
           ],
         ),
