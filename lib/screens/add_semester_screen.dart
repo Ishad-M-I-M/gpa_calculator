@@ -24,7 +24,12 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
 
   void displayAddModuleWindow(BuildContext context){
     showModalBottomSheet(context: context, builder: (_){
-      return const AddModule();
+      return AddModule(addModule: (Module module){
+        setState(() {
+          modules.add(module);
+        });
+        modules.add(module);
+      }, );
     });
   }
   @override

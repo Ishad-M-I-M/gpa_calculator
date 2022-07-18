@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:gpa_calculator/models/module.dart';
 
 class AddModule extends StatefulWidget {
-  const AddModule({Key? key}) : super(key: key);
+  final Function addModule;
+  const AddModule({required this.addModule, Key? key}) : super(key: key);
 
   @override
   State<AddModule> createState() => _AddModuleState();
 }
 
 class _AddModuleState extends State<AddModule> {
+  var moduleCode = TextEditingController();
+  var moduleName = TextEditingController();
+  var moduleCredits = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    var moduleCode = TextEditingController();
-    var moduleName = TextEditingController();
-    var moduleCredits = TextEditingController();
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 10, left: 6, right: 6),
       child: Column(
@@ -27,10 +30,19 @@ class _AddModuleState extends State<AddModule> {
           ),
           TextFormField(
             controller: moduleCredits,
-            decoration: const InputDecoration(label: Text("Enter module credits")),
+            decoration:
+                const InputDecoration(label: Text("Enter module credits")),
             keyboardType: TextInputType.number,
           ),
-          TextButton(onPressed: (){}, child: const Text("Add Module"))
+          TextButton(
+              onPressed: () {
+                widget.addModule(Module(
+                    code: moduleCode.text,
+                    name: moduleName.text,
+                    credits: double.parse(moduleCredits.text)));
+                Navigator.of(context).pop();
+              },
+              child: const Text("Add Module"))
         ],
       ),
     );
