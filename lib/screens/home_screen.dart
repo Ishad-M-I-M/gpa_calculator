@@ -6,7 +6,6 @@ import './add_semester_screen.dart';
 import '../widgets/semester_card.dart';
 
 import '../models/semester.dart';
-import '../models/module.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -27,7 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void navigateToAddSemesterScreen(BuildContext context) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => const AddSemesterScreen()));
+        .push(MaterialPageRoute(builder: (_) => AddSemesterScreen(onSubmit: addSemester,)));
+  }
+
+  void addSemester(Semester semester) {
+    setState(() {
+      semesters.add(semester);
+    });
   }
 
   @override

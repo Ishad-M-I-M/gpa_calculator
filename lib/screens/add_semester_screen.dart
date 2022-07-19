@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../widgets/add_module.dart';
 
+import '../models/semester.dart';
 import '../models/module.dart';
 
 class AddSemesterScreen extends StatefulWidget {
-  const AddSemesterScreen({Key? key}) : super(key: key);
+  final Function onSubmit;
+  const AddSemesterScreen({required this.onSubmit, Key? key}) : super(key: key);
 
   @override
   State<AddSemesterScreen> createState() => _AddSemesterScreenState();
@@ -85,6 +87,16 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
             Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
             ElevatedButton(onPressed: ()=>displayAddModuleWindow(context), child: const Text("Add a Module"))
           ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10),
+        child : OutlinedButton(
+          onPressed: (){
+            widget.onSubmit(Semester(semester: _semester, modules: modules));
+            Navigator.of(context).pop();
+          },
+          child: const Text("Submit"),
         ),
       ),
     );
