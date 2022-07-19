@@ -17,8 +17,15 @@ class SemesterScreen extends StatelessWidget {
               itemCount: semester.modules.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text('${semester.modules[index].code} ${semester.modules[index].name}'),
-                  subtitle: Text('credits: ${semester.modules[index].credits}'),
+                  contentPadding: const EdgeInsets.all(8),
+                  title: Text('${semester.modules[index].code} | ${semester.modules[index].name}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Credits: ${semester.modules[index].credits}'),
+                      Text('Grade: ${semester.modules[index].result}'),
+                    ],
+                  ),
                   trailing: IconButton(
                     icon: const Icon(Icons.add_circle_outline_sharp),
                     onPressed: () {},
