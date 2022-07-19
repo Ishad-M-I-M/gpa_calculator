@@ -19,9 +19,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Semester(semester: 1), Semester(semester: 2), Semester(semester: 3)
   ];
 
-  void navigateToSemesterScreen(BuildContext context, int semester) {
+  void navigateToSemesterScreen(BuildContext context, Semester semester) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) =>  SemesterScreen(number: semester,)));
+        .push(MaterialPageRoute(builder: (_) =>  SemesterScreen(semester: semester,)));
   }
 
   void navigateToAddSemesterScreen(BuildContext context) {
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 1,
               childAspectRatio: 3,
               children: semesters.map((sem){
-                return SemesterCard(semester: sem.semester, onTap: (ctx)=> navigateToSemesterScreen(context, sem.semester),);
+                return SemesterCard(semester: sem.semester, onTap: (ctx)=> navigateToSemesterScreen(context, sem),);
               }).toList(),
             ),
           ),
