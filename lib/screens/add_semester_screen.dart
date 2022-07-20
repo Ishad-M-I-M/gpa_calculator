@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../db/SQLHelper.dart';
+
 import '../widgets/add_module.dart';
 
 import '../models/semester.dart';
@@ -15,19 +17,14 @@ class AddSemesterScreen extends StatefulWidget {
 
 class _AddSemesterScreenState extends State<AddSemesterScreen> {
   var semesters = [1, 2, 3, 4, 5, 6, 7, 8];
-  List<Module> modules = [
-    Module(code: 'CS-2022', name: "Object Oriented Programming", credits: 3.0),
-    Module(code: 'CS-2032', name: "Computer Architecture", credits: 3.0),
-    Module(
-        code: 'CS-2042', name: "Data Structures and Algorithms", credits: 2.5),
-    Module(code: 'MA-1032', name: "Numerical Methods", credits: 3.0),
-  ];
+  List<Module> modules = [];
   int _semester = 0;
 
-  void displayAddModuleWindow(BuildContext context){
+  void displayAddModuleWindow(BuildContext context, int semester) {
     showModalBottomSheet(context: context, builder: (_){
-      return AddModule(addModule: (Module module){
-        setState(() {
+      return AddModule(semester: _semester, addModule: (Module module) async{
+        int id = await SQLHelper.createModule(module);
+        setState((){
           modules.add(module);
         });
       }, );
@@ -85,7 +82,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
               ),
             ),
             Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
-            ElevatedButton(onPressed: ()=>displayAddModuleWindow(context), child: const Text("Add a Module"))
+            ElevatedButton(onPressed: ()=>displayAddModuleWindow(context, _semester), child: const Text("Add a Module"))
           ],
         ),
       ),
