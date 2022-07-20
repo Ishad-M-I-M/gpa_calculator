@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../db/SQLHelper.dart';
+
 import './semester_screen.dart';
 import './add_semester_screen.dart';
 
 import '../widgets/semester_card.dart';
 
 import '../models/semester.dart';
+import '../models/module.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,18 +18,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Semester> semesters = [
-    Semester(semester: 1), Semester(semester: 2), Semester(semester: 3)
-  ];
+  List<Semester> semesters = [];
+
+  void loadModules() async {
+    List<Module> modules = await SQLHelper.getModules();
+    Map<int, Semester> semesterMap = {};
+    for (Module module in modules) {
+      if (semesterMap.keys.toList().contains(module.semester)) {
+        semesterMap[module.semester]?.modules.add(module);
+      } else {
+        semesterMap[module.semester] =
+            Semester(semester: module.semester, modules: [module]);
+      }
+    }
+    setState(() {
+      semesters = semesterMap.values.toList();
+    });
+  }
 
   void navigateToSemesterScreen(BuildContext context, Semester semester) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) =>  SemesterScreen(semester: semester,)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => SemesterScreen(
+              semester: semester,
+            )));
   }
 
   void navigateToAddSemesterScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => AddSemesterScreen(onSubmit: addSemester,)));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => AddSemesterScreen(
+              onSubmit: addSemester,
+            )));
   }
 
   void addSemester(Semester semester) {
@@ -37,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    loadModules();
     return Scaffold(
       appBar: AppBar(
         title: const Text("GPA Calculator"),
@@ -47,8 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: GridView.count(
               crossAxisCount: 1,
               childAspectRatio: 3,
-              children: semesters.map((sem){
-                return SemesterCard(semester: sem.semester, onTap: (ctx)=> navigateToSemesterScreen(context, sem),);
+              children: semesters.map((sem) {
+                return SemesterCard(
+                  semester: sem.semester,
+                  onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                );
               }).toList(),
             ),
           ),
@@ -57,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.only(
                   top: 10, bottom: 10, left: 20, right: 20),
               child: OutlinedButton(
-                  onPressed: ()=> navigateToAddSemesterScreen(context) , child: const Text("Add Semester"))),
+                  onPressed: () => navigateToAddSemesterScreen(context),
+                  child: const Text("Add Semester"))),
         ],
       ),
     );

@@ -39,9 +39,19 @@ class SQLHelper {
   }
 
   // Read all items (Modules)
-  static Future<List<Map<String, dynamic>>> getModules() async {
+  static Future<List<Module>> getModules() async {
     final db = await SQLHelper._db();
-    return db.query('modules', orderBy: "id");
+    List<Map<String, dynamic>> results =  await db.query('modules', orderBy: "id");
+    return List.generate(results.length, (i) {
+      return Module(
+        id: results[i]['id'],
+        name: results[i]['name'],
+        code: results[i]['code'],
+        credits: results[i]['credits'],
+        semester: results[i]['semester'],
+        result: results[i]['result']
+      );
+    });
   }
 
   static Future<List<Map<String, dynamic>>> getModulesWhere(Map<String, String> whereArgs) async{
