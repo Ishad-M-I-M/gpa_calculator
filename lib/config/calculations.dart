@@ -6,13 +6,29 @@ double getEnrolledCredits(Semester semester){
 }
 
 double getSGPA(Semester semester){
-  double total = semester.modules.fold(0, (sum, module) {
+  return _getTotals(semester) / _getEffectiveCredits(semester);
+}
+
+double _getEffectiveCredits(Semester semester){
+  return semester.modules.fold(0, (sum, module) {
+    if (module.result == "Pending") return sum;
+    return sum + module.credits ;
+  });
+}
+
+double _getTotals(Semester semester){
+  return semester.modules.fold(0, (sum, module) {
     if (module.result == "Pending") return sum;
     return sum +  (gpaValues[module.result] != null ? module.credits * gpaValues[module.result]!: 0);
   });
-  double effectiveCredits = semester.modules.fold(0, (sum, module) {
-    if (module.result == "Pending") return sum;
-    return sum + module.credits ;
+}
+
+double getCGPA(List<Semester> semesters){
+  double total = semesters.fold(0, (sum, semester) {
+    return sum + _getTotals(semester);
+  });
+  double effectiveCredits = semesters.fold(0, (sum, semester) {
+    return sum + _getEffectiveCredits(semester);
   });
   return total / effectiveCredits;
 }

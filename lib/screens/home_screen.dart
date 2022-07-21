@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../db/SQLHelper.dart';
 
+import '../config/calculations.dart';
+
 import './semester_screen.dart';
 import './add_semester_screen.dart';
 
@@ -65,6 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Current GPA: ${getCGPA(semesters).toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+          ),
           Flexible(
             child: GridView.count(
               crossAxisCount: 1,
