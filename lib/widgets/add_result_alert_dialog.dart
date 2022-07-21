@@ -4,6 +4,8 @@ import '../db/SQLHelper.dart';
 
 import '../models/module.dart';
 
+import '../config/constants.dart';
+
 class AddResultAlertDialog extends StatefulWidget {
   final Module module;
   const AddResultAlertDialog({required this.module, Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class AddResultAlertDialog extends StatefulWidget {
 }
 
 class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
-  List<String> results = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "I-ca", "I-we"];
+  List<String> results = gpaValues.keys.toList();
   var result = TextEditingController();
   bool isValid = true;
 
