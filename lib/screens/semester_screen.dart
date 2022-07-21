@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/semester.dart';
 
+import '../widgets/add_result_alert_dialog.dart';
+
 class SemesterScreen extends StatelessWidget {
   final Semester semester;
   const SemesterScreen({Key? key, required this.semester}) : super(key: key);
@@ -28,7 +30,11 @@ class SemesterScreen extends StatelessWidget {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.add_circle_outline_sharp),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(context: context, builder: (_){
+                        return AddResultAlertDialog(module: semester.modules[index],);
+                      });
+                    },
                   ),
                 );
               },

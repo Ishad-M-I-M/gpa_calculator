@@ -8,7 +8,7 @@ import '../models/module.dart';
 class SQLHelper {
   static Future<void> _createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE modules(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL,
         credits REAL NOT NULL,
