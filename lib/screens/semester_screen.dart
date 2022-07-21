@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/semester.dart';
 
 import '../widgets/add_result_alert_dialog.dart';
+import '../widgets/module_list_tile.dart';
 
 class SemesterScreen extends StatelessWidget {
   final Semester semester;
@@ -18,25 +19,7 @@ class SemesterScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: semester.modules.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  contentPadding: const EdgeInsets.all(8),
-                  title: Text('${semester.modules[index].code} | ${semester.modules[index].name}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Credits: ${semester.modules[index].credits}'),
-                      Text('Grade: ${semester.modules[index].result}'),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.add_circle_outline_sharp),
-                    onPressed: () {
-                      showDialog(context: context, builder: (_){
-                        return AddResultAlertDialog(module: semester.modules[index],);
-                      });
-                    },
-                  ),
-                );
+                return ModuleListTile(module: semester.modules[index],);
               },
             ),
           ),

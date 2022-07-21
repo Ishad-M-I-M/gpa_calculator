@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/SQLHelper.dart';
 
 import '../widgets/add_module.dart';
+import '../widgets/module_list_tile.dart';
 
 import '../models/semester.dart';
 import '../models/module.dart';
@@ -63,24 +64,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Table(
-                border: TableBorder.all(),
-                columnWidths: const <int, TableColumnWidth>{
-                  0: IntrinsicColumnWidth(),
-                  1: FlexColumnWidth(),
-                  2: IntrinsicColumnWidth(),
-                },
-                children: modules
-                    .map((e) => TableRow(children: [
-                  TableCell(child: Padding(padding: const EdgeInsets.all(4),child:  Text(e.code))),
-                  TableCell(child: Padding(padding: const EdgeInsets.all(4),child: Text(e.name))),
-                  TableCell(child: Padding(padding: const EdgeInsets.all(4),child: Text(e.credits.toString())))
-                ]))
-                    .toList(),
-              ),
-            ),
+            ...modules.map((e) {
+              return ModuleListTile(module: e,);
+            }),
             Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
             ElevatedButton(onPressed: ()=>displayAddModuleWindow(context, _semester), child: const Text("Add a Module"))
           ],
