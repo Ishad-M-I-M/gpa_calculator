@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               childAspectRatio: 3,
               children: semesters.map((sem) {
                 return SemesterCard(
-                  semester: sem.semester,
+                  semester: sem,
                   onTap: (ctx) => navigateToSemesterScreen(context, sem),
                 );
               }).toList(),
