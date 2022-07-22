@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/semester.dart';
 
-import '../widgets/add_result_alert_dialog.dart';
 import '../widgets/module_list_tile.dart';
 
 class SemesterScreen extends StatelessWidget {

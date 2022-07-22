@@ -10,7 +10,8 @@ import '../models/module.dart';
 
 class AddSemesterScreen extends StatefulWidget {
   final Function onSubmit;
-  const AddSemesterScreen({required this.onSubmit, Key? key}) : super(key: key);
+  final List<Semester> existingSemesters;
+  const AddSemesterScreen({this.existingSemesters = const [],required this.onSubmit, Key? key}) : super(key: key);
 
   @override
   State<AddSemesterScreen> createState() => _AddSemesterScreenState();
@@ -57,6 +58,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                   onChanged: (number) {
                     setState((){
                       _semester = number as int;
+                      modules = widget.existingSemesters.firstWhere((semester) => semester.semester == number, orElse: () => Semester(semester: number, modules: [])).modules;
                     });
                   },
                   value: _semester == 0? null: _semester,

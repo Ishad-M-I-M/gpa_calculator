@@ -1,6 +1,6 @@
-# gpa_calculator
+# GPA Calculator
 
-A new Flutter project.
+An app that calculates GPA based on grades of the semester
 
 ## Getting Started
 

@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => AddSemesterScreen(
               onSubmit: addSemester,
+              existingSemesters: semesters,
             )));
   }
 
