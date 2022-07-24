@@ -20,10 +20,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Semester> semesters = [];
+  List<Module> modules = [];
 
   void loadModules() async {
-    List<Module> modules = await SQLHelper.getModules();
+    List<Module> modulesFetched = await SQLHelper.getModules();
+    setState(() {
+      modules = modulesFetched;
+    });
+  }
+
+  List<Semester> getSemesters(){
     Map<int, Semester> semesterMap = {};
     for (Module module in modules) {
       if (semesterMap.keys.toList().contains(module.semester)) {
@@ -33,15 +39,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Semester(semester: module.semester, modules: [module]);
       }
     }
-    setState(() {
-      semesters = semesterMap.values.toList();
-    });
+    return semesterMap.values.toList();
   }
 
-  void navigateToSemesterScreen(BuildContext context, Semester semester) {
+  Semester getSemester(int semester){
+    return Semester(semester:semester, modules: modules.where((element) => element.semester == semester).toList() );
+  }
+
+  void navigateToSemesterScreen(BuildContext context, int semester) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => SemesterScreen(
-              semester: semester,
+              semester: getSemester(semester)
             )));
   }
 
@@ -49,13 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => AddSemesterScreen(
               onSubmit: addSemester,
-              existingSemesters: semesters,
+              existingSemesters: getSemesters(),
             )));
   }
 
   void addSemester(Semester semester) {
     setState(() {
-      semesters.add(semester);
+      modules.addAll(semester.modules);
     });
   }
 
@@ -70,16 +78,16 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Current GPA: ${getCGPA(semesters).toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            child: Text("Current GPA: ${getCGPA(getSemesters()).toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
           ),
           Flexible(
             child: GridView.count(
               crossAxisCount: 1,
               childAspectRatio: 3,
-              children: semesters.map((sem) {
+              children: getSemesters().map((sem) {
                 return SemesterCard(
                   semester: sem,
-                  onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                  onTap: (ctx) => navigateToSemesterScreen(context, sem.semester),
                 );
               }).toList(),
             ),
