@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../db/SQLHelper.dart';
-
 import '../models/module.dart';
 import '../widgets/add_result_alert_dialog.dart';
 
 class ModuleListTile extends StatelessWidget {
   final Module module;
+  final Function delete;
 
-  const ModuleListTile({required this.module, Key? key}) : super(key: key);
+  const ModuleListTile({required this.module, required this.delete, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +24,7 @@ class ModuleListTile extends StatelessWidget {
       trailing: IconButton(
         icon: const Icon(Icons.delete),
         color: Colors.red,
-        onPressed: (){
-          SQLHelper.deleteModule(module.id);
-        }
+        onPressed: ()=> delete(module.id)
       ),
       onTap: () {
         showDialog(

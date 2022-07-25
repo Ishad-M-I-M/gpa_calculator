@@ -6,7 +6,8 @@ import '../widgets/module_list_tile.dart';
 
 class SemesterScreen extends StatelessWidget {
   final Semester semester;
-  const SemesterScreen({Key? key, required this.semester}) : super(key: key);
+  final Function deleteModule;
+  const SemesterScreen({Key? key, required this.semester, required this.deleteModule}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class SemesterScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: semester.modules.length,
               itemBuilder: (context, index) {
-                return ModuleListTile(module: semester.modules[index],);
+                return ModuleListTile(module: semester.modules[index], delete: deleteModule,);
               },
             ),
           ),

@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void navigateToSemesterScreen(BuildContext context, int semester) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => SemesterScreen(
+              deleteModule: deleteModule,
               semester: getSemester(semester)
             )));
   }
@@ -56,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void navigateToAddSemesterScreen(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => AddSemesterScreen(
+              deleteModule: deleteModule,
               onSubmit: addSemester,
               existingSemesters: getSemesters(),
             )));
@@ -66,6 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
       modules.addAll(semester.modules);
     });
   }
+
+  void deleteModule(int moduleId){
+    SQLHelper.deleteModule(moduleId);
+    setState((){
+      modules = modules.where((element) => element.id != moduleId).toList();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

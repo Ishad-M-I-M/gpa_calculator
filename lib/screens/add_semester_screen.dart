@@ -10,8 +10,9 @@ import '../models/module.dart';
 
 class AddSemesterScreen extends StatefulWidget {
   final Function onSubmit;
+  final Function deleteModule;
   final List<Semester> existingSemesters;
-  const AddSemesterScreen({this.existingSemesters = const [],required this.onSubmit, Key? key}) : super(key: key);
+  const AddSemesterScreen({this.existingSemesters = const [], required this.deleteModule,required this.onSubmit, Key? key}) : super(key: key);
 
   @override
   State<AddSemesterScreen> createState() => _AddSemesterScreenState();
@@ -67,7 +68,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
               ],
             ),
             ...modules.map((e) {
-              return ModuleListTile(module: e,);
+              return ModuleListTile(module: e, delete: widget.deleteModule,);
             }),
             Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
             ElevatedButton(onPressed: ()=>displayAddModuleWindow(context, _semester), child: const Text("Add a Module"))
