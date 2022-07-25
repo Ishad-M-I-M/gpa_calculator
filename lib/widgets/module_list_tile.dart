@@ -6,8 +6,9 @@ import '../widgets/add_result_alert_dialog.dart';
 class ModuleListTile extends StatelessWidget {
   final Module module;
   final Function delete;
+  final Function update;
 
-  const ModuleListTile({required this.module, required this.delete, Key? key}) : super(key: key);
+  const ModuleListTile({required this.module, required this.update, required this.delete, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,7 @@ class ModuleListTile extends StatelessWidget {
             builder: (_) {
               return AddResultAlertDialog(
                 module: module,
+                update: update
               );
             });
       },

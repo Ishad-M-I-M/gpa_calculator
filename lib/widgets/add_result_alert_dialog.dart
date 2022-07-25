@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../db/SQLHelper.dart';
-
 import '../models/module.dart';
 
 import '../config/constants.dart';
 
 class AddResultAlertDialog extends StatefulWidget {
   final Module module;
-  const AddResultAlertDialog({required this.module, Key? key}) : super(key: key);
+  final Function update;
+  const AddResultAlertDialog({required this.module, required this.update, Key? key}) : super(key: key);
 
   @override
   State<AddResultAlertDialog> createState() => _AddResultAlertDialogState();
@@ -28,7 +27,7 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
     else{
       Module moduleUpdated = widget.module;
       moduleUpdated.result = result.text.trim();
-      SQLHelper.updateModule(moduleUpdated);
+      widget.update(moduleUpdated);
       Navigator.of(context).pop();
     }
   }
