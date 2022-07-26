@@ -21,11 +21,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Module> modules = [];
+  double cgpa = 0;
 
   void loadModules() async {
     List<Module> modulesFetched = await SQLHelper.getModules();
     setState(() {
       modules = modulesFetched;
+    });
+  }
+
+  void loadCGPA() async{
+    var cgpa_ = await getCGPA(getSemesters());
+    setState((){
+      cgpa = cgpa_;
     });
   }
 
@@ -99,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Current GPA: ${getCGPA(getSemesters()).toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            child: Text("Current GPA: ${cgpa.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
           ),
           Flexible(
             child: GridView.count(
