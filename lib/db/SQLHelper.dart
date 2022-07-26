@@ -1,12 +1,13 @@
-import 'package:path/path.dart';
-
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
-import '../models/result.dart';
 import '../models/module.dart';
+import '../models/result.dart';
 
 class SQLHelper {
+  static const int version = 2;
+
   static Future<void> _createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE IF NOT EXISTS modules(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,29 +26,32 @@ class SQLHelper {
         gpa REAL NOT NULL
     )
     """);
-
-    //start with default results
-    await database.execute("""
-    INSERT INTO gpas(result, gpa) VALUES
-    ('A+', 4.2),
-    ('A', 4.0),
-    ('A-', 3.7),
-    ('B+', 3.3),
-    ('B', 3.0),
-    ('B-', 2.7),
-    ('C+', 2.3),
-    ('C', 2.0),
-    ('C-', 1.7),
-    ('D', 1.3),
-    ('I-ca', 0),
-    ('I-we', 0)
-    """);
+    try {
+      //start with default results
+      await database.execute("""
+        INSERT INTO gpas(result, gpa) VALUES
+        ('A+', 4.2),
+        ('A', 4.0),
+        ('A-', 3.7),
+        ('B+', 3.3),
+        ('B', 3.0),
+        ('B-', 2.7),
+        ('C+', 2.3),
+        ('C', 2.0),
+        ('C-', 1.7),
+        ('D', 1.3),
+        ('I-ca', 0),
+        ('I-we', 0)
+        """);
+    } catch (err) {
+      debugPrint("Something went wrong when deleting an item: $err");
+    }
   }
 
   static Future<sql.Database> _db() async {
     return sql.openDatabase(
       join(await sql.getDatabasesPath(), 'gpa_calculator.db'),
-      version: 4,
+      version: version,
       onCreate: (sql.Database database, int version) async {
         await _createTables(database);
       },
