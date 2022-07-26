@@ -8,7 +8,7 @@ import '../models/module.dart';
 
 class SQLHelper {
   static Future<void> _createTables(sql.Database database) async {
-    await database.execute("""CREATE TABLE IF NOT EXIST modules(
+    await database.execute("""CREATE TABLE IF NOT EXISTS modules(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL,
@@ -19,7 +19,7 @@ class SQLHelper {
       )
       """);
 
-    await database.execute("""CREATE TABLE IF NOT EXIST gpas(
+    await database.execute("""CREATE TABLE IF NOT EXISTS gpas(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         result TEXT NOT NULL UNIQUE,
         gpa REAL NOT NULL
@@ -47,10 +47,14 @@ class SQLHelper {
   static Future<sql.Database> _db() async {
     return sql.openDatabase(
       join(await sql.getDatabasesPath(), 'gpa_calculator.db'),
-      version: 2,
+      version: 4,
       onCreate: (sql.Database database, int version) async {
         await _createTables(database);
       },
+      onUpgrade: (sql.Database database, int version1, int version2) async {
+        print("Version $version1 to $version2");
+        await _createTables(database);
+      }
     );
   }
 

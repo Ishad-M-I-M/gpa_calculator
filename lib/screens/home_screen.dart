@@ -99,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     loadModules();
+    loadCGPA();
     return Scaffold(
       appBar: AppBar(
         title: const Text("GPA Calculator"),

@@ -20,11 +20,12 @@ class _SemesterCardState extends State<SemesterCard> {
   void loadSGPA() async{
     double sgpa_ = await getSGPA(widget.semester);
     setState((){
-      sgpa = sgpa;
+      sgpa = sgpa_;
     });
   }
   @override
   Widget build(BuildContext context) {
+    loadSGPA();
     return InkWell(
       onTap: () => widget.onTap(context),
       child: Card(
