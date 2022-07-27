@@ -6,7 +6,7 @@ import '../models/module.dart';
 import '../models/result.dart';
 
 class SQLHelper {
-  static const int version = 2;
+  static const int _version = 2;
 
   static Future<void> _createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE IF NOT EXISTS modules(
@@ -51,7 +51,7 @@ class SQLHelper {
   static Future<sql.Database> _db() async {
     return sql.openDatabase(
       join(await sql.getDatabasesPath(), 'gpa_calculator.db'),
-      version: version,
+      version: _version,
       onCreate: (sql.Database database, int version) async {
         await _createTables(database);
       },
