@@ -18,25 +18,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text("Settings"),
       ),
-      body: Column(
-        children: [
-          ExpansionPanelList(
-            children: [
-              ExpansionPanel(
-                  headerBuilder: (context, isOpen) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("GPA values", style: TextStyle(fontSize: 18)),
-                    );
-                  },
-                  body: GPAValueList(),
-                  isExpanded: _isOpen[0])
-            ],
-            expansionCallback: (i, isOpen) {
-              setState(() => {_isOpen[i] = !isOpen});
-            },
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ExpansionPanelList(
+              children: [
+                ExpansionPanel(
+                    headerBuilder: (context, isOpen) {
+                      return const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("GPA values", style: TextStyle(fontSize: 18)),
+                      );
+                    },
+                    body: const GPAValueList(),
+                    isExpanded: _isOpen[0])
+              ],
+              expansionCallback: (i, isOpen) {
+                setState(() => {_isOpen[i] = !isOpen});
+              },
+            )
+          ],
+        ),
       ),
     );
   }

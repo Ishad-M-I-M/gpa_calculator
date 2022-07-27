@@ -27,14 +27,17 @@ class _GPAValueListState extends State<GPAValueList> {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Column(
         children: [
-          ...gpas.map((e) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(e.result),
-                Text(e.gpa.toString())
-              ],
+          ...gpas.map((e) => InkWell(
+            onTap: (){},
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(e.result),
+                  Text(e.gpa.toString())
+                ],
+              ),
             ),
           ))
         ],
