@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../db/SQLHelper.dart';
 import '../models/result.dart';
 
+import '../widgets/gp_vlaue_edit_dialog.dart';
+
 class GPValueList extends StatefulWidget {
   const GPValueList({Key? key}) : super(key: key);
 
@@ -20,6 +22,11 @@ class _GPValueListState extends State<GPValueList> {
     });
   }
 
+  void displayGPValueEditDialog(BuildContext context, Result gp) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => GPValueEditDialog(gp.result)));
+  }
+
   @override
   Widget build(BuildContext context) {
     loadGPAs();
@@ -28,7 +35,7 @@ class _GPValueListState extends State<GPValueList> {
       child: Column(
         children: [
           ...gpas.map((e) => InkWell(
-            onTap: (){},
+            onTap: ()=> displayGPValueEditDialog(context, e),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
