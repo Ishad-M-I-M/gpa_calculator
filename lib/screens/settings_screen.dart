@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/gpa_vlaues_list.dart';
+import '../widgets/gp_vlaues_list.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -27,10 +27,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     headerBuilder: (context, isOpen) {
                       return const Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Text("GPA values", style: TextStyle(fontSize: 18)),
+                        child: Text("Grade Point Values", style: TextStyle(fontSize: 18)),
                       );
                     },
-                    body: const GPAValueList(),
+                    body: const GPValueList(),
                     isExpanded: _isOpen[0])
               ],
               expansionCallback: (i, isOpen) {

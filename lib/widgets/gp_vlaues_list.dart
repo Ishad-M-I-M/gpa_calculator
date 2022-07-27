@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../db/SQLHelper.dart';
 import '../models/result.dart';
 
-class GPAValueList extends StatefulWidget {
-  const GPAValueList({Key? key}) : super(key: key);
+class GPValueList extends StatefulWidget {
+  const GPValueList({Key? key}) : super(key: key);
 
   @override
-  State<GPAValueList> createState() => _GPAValueListState();
+  State<GPValueList> createState() => _GPValueListState();
 }
 
-class _GPAValueListState extends State<GPAValueList> {
+class _GPValueListState extends State<GPValueList> {
   List<Result> gpas = [];
 
   void loadGPAs() async {
