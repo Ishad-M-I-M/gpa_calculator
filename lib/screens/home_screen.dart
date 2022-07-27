@@ -6,6 +6,7 @@ import '../config/calculations.dart';
 
 import './semester_screen.dart';
 import './add_semester_screen.dart';
+import './settings_screen.dart';
 
 import '../widgets/semester_card.dart';
 
@@ -21,11 +22,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Module> modules = [];
+  double cgpa = 0;
 
   void loadModules() async {
     List<Module> modulesFetched = await SQLHelper.getModules();
     setState(() {
       modules = modulesFetched;
+    });
+  }
+
+  void loadCGPA() async{
+    var cgpa_ = await getCGPA(getSemesters());
+    setState((){
+      cgpa = cgpa_;
     });
   }
 
@@ -65,6 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
             )));
   }
 
+  void navigateToSettingsScreen(BuildContext context){
+    Navigator.of(context).push(MaterialPageRoute(builder: (_)=>const SettingsScreen()));
+  }
+
   void addSemester(Semester semester) {
     setState(() {
       modules.addAll(semester.modules);
@@ -91,15 +104,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     loadModules();
+    loadCGPA();
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(onPressed: ()=> navigateToSettingsScreen(context), icon: const Icon(Icons.settings))
+        ],
         title: const Text("GPA Calculator"),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Current GPA: ${getCGPA(getSemesters()).toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            child: Text("Current GPA: ${cgpa.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
           ),
           Flexible(
             child: GridView.count(
