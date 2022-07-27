@@ -1,13 +1,15 @@
-import 'package:path/path.dart';
-
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 import '../models/module.dart';
+import '../models/result.dart';
 
 class SQLHelper {
+  static const int _version = 2;
+
   static Future<void> _createTables(sql.Database database) async {
-    await database.execute("""CREATE TABLE modules(
+    await database.execute("""CREATE TABLE IF NOT EXISTS modules(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL,
@@ -17,15 +19,46 @@ class SQLHelper {
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
+
+    await database.execute("""CREATE TABLE IF NOT EXISTS gpas(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        result TEXT NOT NULL UNIQUE,
+        gpa REAL NOT NULL
+    )
+    """);
+    try {
+      //start with default results
+      await database.execute("""
+        INSERT INTO gpas(result, gpa) VALUES
+        ('A+', 4.2),
+        ('A', 4.0),
+        ('A-', 3.7),
+        ('B+', 3.3),
+        ('B', 3.0),
+        ('B-', 2.7),
+        ('C+', 2.3),
+        ('C', 2.0),
+        ('C-', 1.7),
+        ('D', 1.3),
+        ('I-ca', 0),
+        ('I-we', 0)
+        """);
+    } catch (err) {
+      debugPrint("Something went wrong when deleting an item: $err");
+    }
   }
 
   static Future<sql.Database> _db() async {
     return sql.openDatabase(
       join(await sql.getDatabasesPath(), 'gpa_calculator.db'),
-      version: 1,
+      version: _version,
       onCreate: (sql.Database database, int version) async {
         await _createTables(database);
       },
+      onUpgrade: (sql.Database database, int version1, int version2) async {
+        print("Version $version1 to $version2");
+        await _createTables(database);
+      }
     );
   }
 
@@ -89,5 +122,18 @@ class SQLHelper {
     } catch (err) {
       debugPrint("Something went wrong when deleting an item: $err");
     }
+  }
+
+  // results table queries
+  static Future<List<Result>> getGPAs() async{
+    final db = await SQLHelper._db();
+    List<Map<String, dynamic>> results =  await db.query('gpas', orderBy: "id");
+    return List.generate(results.length, (index) {
+      return Result(
+        id: results[index]['id'],
+        result: results[index]['result'],
+        gpa: results[index]['gpa']
+      );
+    });
   }
 }

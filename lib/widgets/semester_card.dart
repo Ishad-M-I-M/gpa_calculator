@@ -4,16 +4,30 @@ import '../models/semester.dart';
 
 import '../config/calculations.dart';
 
-class SemesterCard extends StatelessWidget {
+class SemesterCard extends StatefulWidget {
   final Semester semester;
   final Function onTap;
   const SemesterCard({required this.semester, required this.onTap, Key? key})
       : super(key: key);
 
   @override
+  State<SemesterCard> createState() => _SemesterCardState();
+}
+
+class _SemesterCardState extends State<SemesterCard> {
+  double sgpa = 0;
+
+  void loadSGPA() async{
+    double sgpa_ = await getSGPA(widget.semester);
+    setState((){
+      sgpa = sgpa_;
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+    loadSGPA();
     return InkWell(
-      onTap: () => onTap(context),
+      onTap: () => widget.onTap(context),
       child: Card(
         color: Colors.deepPurpleAccent,
         child: Padding(
@@ -24,7 +38,7 @@ class SemesterCard extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                   child: Text(
-                "Semester ${semester.semester}",
+                "Semester ${widget.semester.semester}",
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -37,11 +51,11 @@ class SemesterCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Credits Enrolled: ${getEnrolledCredits(semester)}",
+                      "Credits Enrolled: ${getEnrolledCredits(widget.semester)}",
                       style: const TextStyle(color: Colors.white, fontSize: 15),
                     ),
                     Text(
-                      "SGPA: ${getSGPA(semester).toStringAsFixed(2)}",
+                      "SGPA: ${sgpa.toStringAsFixed(2)}",
                       style: const TextStyle(color: Colors.white, fontSize: 15),
                     ),
                   ],
