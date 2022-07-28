@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void navigateToSemesterScreen(BuildContext context, int semester) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => SemesterScreen(
-              semester: Semester(semester: semester),
+              semester: semester,
             )));
   }
 
