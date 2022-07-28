@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Text("GPA values", style: TextStyle(fontSize: 18)),
                     );
                   },
-                  body: GPAValueList(),
+                  body: const GPAValueList(),
                   isExpanded: _isOpen[0])
             ],
             expansionCallback: (i, isOpen) {
