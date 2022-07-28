@@ -87,11 +87,24 @@ class SQLHelper {
     });
   }
 
-  static Future<List<Map<String, dynamic>>> getModulesWhere(Map<String, String> whereArgs) async{
+  static Future<List<Module>> getModulesWhere(Map<String, String> whereArgs) async{
     final db = await SQLHelper._db();
-    final whereQuery = whereArgs.entries.fold("", (previousValue, element) => "$previousValue and ${element.key} = ${element.value}");
+    final whereQuery = whereArgs.entries.fold("", (previousValue, element){
+      if (previousValue == "") return "${element.key} = ${element.value} ";
+      return "$previousValue and ${element.key} = ${element.value}";
+    });
     print(whereQuery);
-    return db.query('modules', where: whereQuery);
+    List<Map<String, dynamic>> results =  await db.query('modules', where: whereQuery);
+    return List.generate(results.length, (i) {
+      return Module(
+          id: results[i]['id'],
+          name: results[i]['name'],
+          code: results[i]['code'],
+          credits: results[i]['credits'],
+          semester: results[i]['semester'],
+          result: results[i]['result']
+      );
+    });
   }
 
   // Read a single item by id
@@ -122,6 +135,16 @@ class SQLHelper {
     } catch (err) {
       debugPrint("Something went wrong when deleting an item: $err");
     }
+  }
+
+  static Future<List<int>> getSemesters() async {
+    final db = await SQLHelper._db();
+    final results = await db.query('modules', columns: ["semester"], distinct: true);
+    List<int> semesters = [];
+    for (var result in results) {
+      semesters.add(result['semester'] as int);
+    }
+    return semesters;
   }
 
   // results table queries
