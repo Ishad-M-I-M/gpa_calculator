@@ -22,45 +22,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Module> modules = [];
-  double cgpa = 0;
 
-  void loadModules() async {
+  Future<List<Module>> loadModules() async {
     List<Module> modulesFetched = await SQLHelper.getModules();
-    setState(() {
-      modules = modulesFetched;
-    });
-  }
-
-  void loadCGPA() async{
-    var cgpa_ = await getCGPA(getSemesters());
-    setState((){
-      cgpa = cgpa_;
-    });
-  }
-
-  List<Semester> getSemesters(){
-    Map<int, Semester> semesterMap = {};
-    for (Module module in modules) {
-      if (semesterMap.keys.toList().contains(module.semester)) {
-        semesterMap[module.semester]?.modules.add(module);
-      } else {
-        semesterMap[module.semester] =
-            Semester(semester: module.semester, modules: [module]);
-      }
-    }
-    return semesterMap.values.toList();
-  }
-
-  Semester getSemester(int semester){
-    return Semester(semester:semester, modules: modules.where((element) => element.semester == semester).toList() );
+    return modulesFetched;
   }
 
   void navigateToSemesterScreen(BuildContext context, int semester) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => SemesterScreen(
-              deleteModule: deleteModule,
-              updateModule: updateModule,
-              semester: getSemester(semester)
+              semester: semester,
             )));
   }
 
@@ -70,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
               updateModule: updateModule,
               deleteModule: deleteModule,
               onSubmit: addSemester,
-              existingSemesters: getSemesters(),
+              existingSemesters: const [],
             )));
   }
 
@@ -103,8 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    loadModules();
-    loadCGPA();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -116,18 +85,45 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Current GPA: ${cgpa.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            child: FutureBuilder<double>(
+              future : getCGPA(),
+              initialData: 0,
+              builder: (context, snapshot) {
+                return
+                snapshot.hasData?
+                  Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                    :
+                  const Text("Loading...", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
+              },
+            )
           ),
           Flexible(
-            child: GridView.count(
-              crossAxisCount: 1,
-              childAspectRatio: 3,
-              children: getSemesters().map((sem) {
-                return SemesterCard(
-                  semester: sem,
-                  onTap: (ctx) => navigateToSemesterScreen(context, sem.semester),
-                );
-              }).toList(),
+            child: FutureBuilder<List<int>>(
+              initialData: const <int>[],
+              future: SQLHelper.getSemesters(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting)
+                {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                else if (snapshot.hasError)
+                {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+                else
+                {
+                  return GridView.count(
+                    crossAxisCount: 1,
+                    childAspectRatio: 3,
+                    children: (snapshot.data as List<int>).map((sem) {
+                      return SemesterCard(
+                        semester: sem,
+                        onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                      );
+                    }).toList(),
+                  );
+                }
+              },
             ),
           ),
           Container(

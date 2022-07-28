@@ -69,7 +69,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
               ],
             ),
             ...modules.map((e) {
-              return ModuleListTile(module: e, delete: widget.deleteModule, update: widget.updateModule,);
+              return ModuleListTile(module: e);
             }),
             Padding(padding: const EdgeInsets.all(10),child: Text("Total Credits: $totalCredits")),
             ElevatedButton(onPressed: ()=>displayAddModuleWindow(context, _semester), child: const Text("Add a Module"))

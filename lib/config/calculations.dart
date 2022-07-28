@@ -1,28 +1,33 @@
-// import './constants.dart';
-import 'package:gpa_calculator/config/constants.dart';
-import 'package:gpa_calculator/models/module.dart';
-import 'package:gpa_calculator/models/result.dart';
-
-import '../db/SQLHelper.dart';
+import '../models/module.dart';
+import '../models/result.dart';
 import '../models/semester.dart';
 
-double getEnrolledCredits(Semester semester){
-  return semester.modules.fold(0, (sum, module) => sum + module.credits);
+import '../db/SQLHelper.dart';
+
+Future<double> getEnrolledCredits(int semester) async{
+  List<Module> modules = await SQLHelper.getModulesWhere({"semester": semester.toString()});
+
+  double total = 0;
+  for(Module module in modules){
+    total += module.credits ;
+  }
+  return total;
 }
 
-Future<double> getSGPA(Semester semester) async{
-  double total = await _getTotals(semester);
-  return  total/ _getEffectiveCredits(semester);
+Future<double> getSGPA(int semester) async{
+  List<Module> modules = await SQLHelper.getModulesWhere({"semester": semester.toString()});
+  double total = await _getTotals(modules);
+  return  total/ _getEffectiveCredits(modules);
 }
 
-double _getEffectiveCredits(Semester semester){
-  return semester.modules.fold(0, (sum, module) {
+double _getEffectiveCredits(List<Module> modules){
+  return modules.fold(0, (sum, module) {
     if (module.result == "Pending") return sum;
     return sum + module.credits ;
   });
 }
 
-Future<double> _getTotals(Semester semester) async{
+Future<double> _getTotals(List<Module> modules) async{
   List<Result> gpas = await SQLHelper.getGPAs();
   Map<String, double> gpaValues = {};
   for(Result res in gpas){
@@ -30,20 +35,14 @@ Future<double> _getTotals(Semester semester) async{
   }
 
   double total = 0;
-  for(Module module in semester.modules){
+  for(Module module in modules){
     if (module.result != "Pending") total = module.credits * gpaValues[module.result]!;
   }
   return total;
 }
 
-Future<double> getCGPA(List<Semester> semesters) async{
-  double total =0;
-  for(Semester semester in semesters){
-    double semTotal = await _getTotals(semester);
-    total += semTotal;
-  }
-  double effectiveCredits = semesters.fold(0, (sum, semester) {
-    return sum + _getEffectiveCredits(semester);
-  });
-  return total / effectiveCredits;
+Future<double> getCGPA() async{
+  List<Module> modules = await SQLHelper.getModules();
+  double total = await _getTotals(modules);
+  return  total/ _getEffectiveCredits(modules);
 }

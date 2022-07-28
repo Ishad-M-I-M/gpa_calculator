@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../config/calculations.dart';
+import '../db/SQLHelper.dart';
+import '../models/module.dart';
 import '../models/semester.dart';
 
-import '../config/calculations.dart';
-
 class SemesterCard extends StatefulWidget {
-  final Semester semester;
+  final int semester;
   final Function onTap;
+
   const SemesterCard({required this.semester, required this.onTap, Key? key})
       : super(key: key);
 
@@ -15,56 +17,109 @@ class SemesterCard extends StatefulWidget {
 }
 
 class _SemesterCardState extends State<SemesterCard> {
-  double sgpa = 0;
-
-  void loadSGPA() async{
-    double sgpa_ = await getSGPA(widget.semester);
-    setState((){
-      sgpa = sgpa_;
-    });
+  Future<Semester> getSemester(int semester) async {
+    List<Module> moduleList =
+        await SQLHelper.getModulesWhere({"semester": semester.toString()});
+    return Semester(semester: semester, modules: moduleList);
   }
+
   @override
   Widget build(BuildContext context) {
-    loadSGPA();
-    return InkWell(
-      onTap: () => widget.onTap(context),
-      child: Card(
-        color: Colors.deepPurpleAccent,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                  child: Text(
-                "Semester ${widget.semester.semester}",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-                    textAlign: TextAlign.center,
-              )),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Credits Enrolled: ${getEnrolledCredits(widget.semester)}",
-                      style: const TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                    Text(
-                      "SGPA: ${sgpa.toStringAsFixed(2)}",
-                      style: const TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ],
+    return FutureBuilder<Semester>(
+        initialData: Semester(semester: widget.semester, modules: []),
+        future: getSemester(widget.semester),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+          {
+            return const Center(child: CircularProgressIndicator());
+          }
+          else if (snapshot.hasError)
+          {
+            print(snapshot.error);
+            return Center(child: Text("Error: ${snapshot.error}"));
+          }
+          else
+          {
+            return InkWell(
+              onTap: () => widget.onTap(context),
+              child: Card(
+                color: Colors.deepPurpleAccent,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            "Semester ${snapshot.data?.semester}",
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                            textAlign: TextAlign.center,
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FutureBuilder<double>(
+                          initialData: 0.0,
+                          future: getEnrolledCredits(widget.semester),
+                              builder: (context, snapshot){
+                                if (snapshot.connectionState == ConnectionState.waiting)
+                                {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                                else if (snapshot.hasError)
+                                {
+                                  return Center(child: Text("Error: ${snapshot.error}"));
+                                }
+                                else
+                                {
+                                  return Text(
+                                    "Credits Enrolled: ${snapshot.data?.toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  );
+                                }
+                              },
+                            ),
+                            FutureBuilder<double>(
+                              initialData: 0.0,
+                              future: getSGPA(widget.semester),
+                              builder: (context, snapshot){
+                                if (snapshot.connectionState == ConnectionState.waiting)
+                                {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                                else if (snapshot.hasError)
+                                {
+                                  return Center(child: Text("Error: ${snapshot.error}"));
+                                }
+                                else
+                                {
+                                  return Text(
+                                    "SGPA:  ${snapshot.data?.toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }
+        },
     );
   }
 }
