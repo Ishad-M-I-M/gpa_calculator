@@ -23,6 +23,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Module> modules = [];
 
+  late Future<double> cgpa;
+  late Future<List<int>> semesters;
+
+  @override
+  initState(){
+    super.initState();
+    cgpa = getCGPA();
+    semesters = SQLHelper.getSemesters();
+  }
+
   Future<List<Module>> loadModules() async {
     List<Module> modulesFetched = await SQLHelper.getModules();
     return modulesFetched;
@@ -71,6 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _refresh() async{
+    setState((){
+      cgpa = getCGPA();
+      semesters = SQLHelper.getSemesters();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,59 +98,62 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         title: const Text("GPA Calculator"),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FutureBuilder<double>(
-              future : getCGPA(),
-              initialData: 0,
-              builder: (context, snapshot) {
-                return
-                snapshot.hasData?
-                  Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-                    :
-                  const Text("Loading...", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
-              },
-            )
-          ),
-          Flexible(
-            child: FutureBuilder<List<int>>(
-              initialData: const <int>[],
-              future: SQLHelper.getSemesters(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting)
-                {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                else if (snapshot.hasError)
-                {
-                  return Center(child: Text("Error: ${snapshot.error}"));
-                }
-                else
-                {
-                  return GridView.count(
-                    crossAxisCount: 1,
-                    childAspectRatio: 3,
-                    children: (snapshot.data as List<int>).map((sem) {
-                      return SemesterCard(
-                        semester: sem,
-                        onTap: (ctx) => navigateToSemesterScreen(context, sem),
-                      );
-                    }).toList(),
-                  );
-                }
-              },
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<double>(
+                future : cgpa,
+                initialData: 0,
+                builder: (context, snapshot) {
+                  return
+                  snapshot.hasData?
+                    Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                      :
+                    const Text("Loading...", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
+                },
+              )
             ),
-          ),
-          Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(
-                  top: 10, bottom: 10, left: 20, right: 20),
-              child: OutlinedButton(
-                  onPressed: () => navigateToAddSemesterScreen(context),
-                  child: const Text("Add Semester"))),
-        ],
+            Flexible(
+              child: FutureBuilder<List<int>>(
+                initialData: const <int>[],
+                future: semesters,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                  {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  else if (snapshot.hasError)
+                  {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  }
+                  else
+                  {
+                    return GridView.count(
+                      crossAxisCount: 1,
+                      childAspectRatio: 3,
+                      children: (snapshot.data as List<int>).map((sem) {
+                        return SemesterCard(
+                          semester: sem,
+                          onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                        );
+                      }).toList(),
+                    );
+                  }
+                },
+              ),
+            ),
+            Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 20, right: 20),
+                child: OutlinedButton(
+                    onPressed: () => navigateToAddSemesterScreen(context),
+                    child: const Text("Add Semester"))),
+          ],
+        ),
       ),
     );
   }
