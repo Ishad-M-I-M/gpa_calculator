@@ -36,7 +36,7 @@ Future<double> _getTotals(List<Module> modules) async{
 
   double total = 0;
   for(Module module in modules){
-    if (module.result != "Pending") total = module.credits * gpaValues[module.result]!;
+    if (module.result != "Pending") total += module.credits * gpaValues[module.result]!;
   }
   return total;
 }
