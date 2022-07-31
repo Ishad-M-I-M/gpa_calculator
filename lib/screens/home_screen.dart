@@ -131,15 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                   else
                   {
-                    return GridView.count(
-                      crossAxisCount: 1,
-                      childAspectRatio: 3,
-                      children: (snapshot.data as List<int>).map((sem) {
-                        return SemesterCard(
-                          semester: sem,
-                          onTap: (ctx) => navigateToSemesterScreen(context, sem),
-                        );
-                      }).toList(),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.count(
+                        crossAxisCount: 1,
+                        childAspectRatio: 3,
+                        children: (snapshot.data as List<int>).map((sem) {
+                          return SemesterCard(
+                            semester: sem,
+                            onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                          );
+                        }).toList(),
+                      ),
                     );
                   }
                 },

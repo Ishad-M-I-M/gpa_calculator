@@ -42,8 +42,23 @@ class _SemesterCardState extends State<SemesterCard> {
           {
             return InkWell(
               onTap: () => widget.onTap(context),
-              child: Card(
-                color: Colors.deepPurpleAccent,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 2.0,
+                    style: BorderStyle.solid,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                   child: Column(
@@ -54,7 +69,6 @@ class _SemesterCardState extends State<SemesterCard> {
                           child: Text(
                             "Semester ${snapshot.data?.semester}",
                             style: const TextStyle(
-                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20),
                             textAlign: TextAlign.center,
@@ -81,7 +95,6 @@ class _SemesterCardState extends State<SemesterCard> {
                                   return Text(
                                     "Credits Enrolled: ${snapshot.data?.toStringAsFixed(2)}",
                                     style: const TextStyle(
-                                        color: Colors.white,
                                         fontSize: 15),
                                   );
                                 }
@@ -104,7 +117,6 @@ class _SemesterCardState extends State<SemesterCard> {
                                   return Text(
                                     "SGPA:  ${snapshot.data?.toStringAsFixed(2)}",
                                     style: const TextStyle(
-                                        color: Colors.white,
                                         fontSize: 15),
                                   );
                                 }
