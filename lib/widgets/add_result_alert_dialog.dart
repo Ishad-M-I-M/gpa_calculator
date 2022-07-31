@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../db/SQLHelper.dart';
 import '../models/module.dart';
 
-import '../config/constants.dart';
+import '../models/result.dart';
 
 class AddResultAlertDialog extends StatefulWidget {
   final Module module;
@@ -14,38 +15,45 @@ class AddResultAlertDialog extends StatefulWidget {
 }
 
 class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
-  List<String> results = gpaValues.keys.toList();
-  var result = TextEditingController();
-  bool isValid = true;
+  String selectedResult = "";
 
   void submitResult() async{
-    if(! results.contains(result.text.trim())){
-      setState(() {
-        isValid = false;
-      });
-    }
-    else{
       Module moduleUpdated = widget.module;
-      moduleUpdated.result = result.text.trim();
+      moduleUpdated.result = selectedResult.toString().trim();
       widget.update(moduleUpdated);
       Navigator.of(context).pop();
-    }
   }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Add Result"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            decoration: InputDecoration(label: Text("Enter Result For ${widget.module.code}")),
-            keyboardType: TextInputType.text,
-            controller: result,
-          ),
-          if (!isValid)
-            const Text("Not a valid result"),
-        ],
+      content: FutureBuilder<List<Result>>(
+        initialData: const [],
+        future: SQLHelper.getGPAs(),
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator());
+          }
+          else if(snapshot.hasError){
+            return Center(child: Text("Error: ${snapshot.error}"));
+          }
+          return Container(
+            child: DropdownButton(
+              onChanged: (value) {
+                setState(() {
+                  selectedResult = value.toString();
+                });
+              },
+              items: snapshot.data?.map((e) => DropdownMenuItem(
+                value: e.result,
+                child: Text(e.result),
+              )).toList(),
+              hint: const Text("Select Result"),
+              value: selectedResult == ""?null: selectedResult,
+            ),
+          );
+        },
       ),
       actions: [
         TextButton(onPressed: submitResult, child: const Text("Add")),
