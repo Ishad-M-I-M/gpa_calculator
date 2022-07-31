@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   return
                   snapshot.hasData?
-                    Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                    Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style:TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor))
                       :
                     const Text("Loading...", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
                 },

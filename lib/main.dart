@@ -25,10 +25,19 @@ class GPACalculatorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Text Calculator",
-      home: HomeScreen(),
+      home: const HomeScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        appBarTheme: const AppBarTheme(
+          color: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        )
+      ),
     );
   }
 }
