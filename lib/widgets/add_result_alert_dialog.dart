@@ -38,8 +38,13 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
           else if(snapshot.hasError){
             return Center(child: Text("Error: ${snapshot.error}"));
           }
-          return Container(
-            child: DropdownButton(
+          return
+            DropdownButtonFormField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
               onChanged: (value) {
                 setState(() {
                   selectedResult = value.toString();
@@ -51,8 +56,7 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
               )).toList(),
               hint: const Text("Select Result"),
               value: selectedResult == ""?null: selectedResult,
-            ),
-          );
+            );
         },
       ),
       actions: [
