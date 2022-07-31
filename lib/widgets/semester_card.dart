@@ -43,6 +43,7 @@ class _SemesterCardState extends State<SemesterCard> {
             return InkWell(
               onTap: () => widget.onTap(context),
               child: Container(
+                margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                   border: Border.all(
@@ -64,18 +65,18 @@ class _SemesterCardState extends State<SemesterCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            "Semester ${snapshot.data?.semester}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                            textAlign: TextAlign.center,
+                      Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "Semester ${snapshot.data?.semester}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
                           )),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Column(
+                      Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             FutureBuilder<double>(
@@ -124,7 +125,6 @@ class _SemesterCardState extends State<SemesterCard> {
                             ),
                           ],
                         ),
-                      ),
                     ],
                   ),
                 ),
