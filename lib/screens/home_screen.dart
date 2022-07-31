@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   return
                   snapshot.hasData?
-                    Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                    Text("Current GPA: ${snapshot.data?.toStringAsFixed(2)}", style:TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor))
                       :
                     const Text("Loading...", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
                 },
@@ -131,15 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                   else
                   {
-                    return GridView.count(
-                      crossAxisCount: 1,
-                      childAspectRatio: 3,
-                      children: (snapshot.data as List<int>).map((sem) {
-                        return SemesterCard(
-                          semester: sem,
-                          onTap: (ctx) => navigateToSemesterScreen(context, sem),
-                        );
-                      }).toList(),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.count(
+                        crossAxisCount: 1,
+                        childAspectRatio: 3,
+                        children: (snapshot.data as List<int>).map((sem) {
+                          return SemesterCard(
+                            semester: sem,
+                            onTap: (ctx) => navigateToSemesterScreen(context, sem),
+                          );
+                        }).toList(),
+                      ),
                     );
                   }
                 },

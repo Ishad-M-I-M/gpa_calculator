@@ -23,23 +23,28 @@ class _AddModuleState extends State<AddModule> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 6, right: 6),
+      padding: const EdgeInsets.only(top: 20, bottom: 10, left: 6, right: 6),
       child: Column(
         children: [
+          const Text("Module Details", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
           TextFormField(
             controller: moduleCode,
-            decoration: const InputDecoration(label: Text("Enter Module Code")),
+            decoration: InputDecoration(label: const Text("Enter Module Code"), border: OutlineInputBorder( borderRadius: BorderRadius.circular(8.0))),
           ),
+          const SizedBox(height: 10),
           TextFormField(
             controller: moduleName,
-            decoration: const InputDecoration(label: Text("Enter Module Name")),
+            decoration: InputDecoration(label: const Text("Enter Module Name"), border: OutlineInputBorder( borderRadius: BorderRadius.circular(8.0))),
           ),
+          const SizedBox(height: 10),
           TextFormField(
             controller: moduleCredits,
             decoration:
-                const InputDecoration(label: Text("Enter module credits")),
+                InputDecoration(label: const Text("Enter module credits"), border: OutlineInputBorder( borderRadius: BorderRadius.circular(8.0))),
             keyboardType: TextInputType.number,
           ),
+          const SizedBox(height: 10),
           TextButton(
               onPressed: () {
                 widget.addModule(Module(
