@@ -42,9 +42,35 @@ class GPACalculatorApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
-        )
+          bodyLarge: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 15,
+            color: Colors.black,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+          ),
+        ),
+
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.white,
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10),
+            ),
+        ),
+
       ),
+      ),
+
       darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.blue,
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey.shade900,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -52,6 +78,24 @@ class GPACalculatorApp extends StatelessWidget {
           color: Colors.grey.shade900,
           foregroundColor: Colors.white,
           elevation: 0,
+        ),
+
+        // Theme for alert Dialog Box
+        dialogTheme: DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          titleTextStyle: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          contentTextStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.grey.shade900,
         ),
 
         // Text Theme
@@ -83,7 +127,19 @@ class GPACalculatorApp extends StatelessWidget {
             fontSize: 14,
             color: Colors.white,
           ),
-        )
+        ),
+
+        // Theme for bottom sheet
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: Colors.grey.shade900,
+          elevation: 3,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+            ),
+          ),
+        ),
+
       ),
 
     );

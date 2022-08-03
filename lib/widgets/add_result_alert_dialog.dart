@@ -40,6 +40,7 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
           }
           return
             DropdownButtonFormField(
+              dropdownColor: Theme.of(context).scaffoldBackgroundColor,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -54,7 +55,7 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
                 value: e.result,
                 child: Text(e.result),
               )).toList(),
-              hint: const Text("Select Result"),
+              hint: Text("Select Result", style: Theme.of(context).textTheme.bodyMedium,),
               value: selectedResult == ""?null: selectedResult,
             );
         },

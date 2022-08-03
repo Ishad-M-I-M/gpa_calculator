@@ -53,9 +53,9 @@ class _SemesterCardState extends State<SemesterCard> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: const Offset(3, 3), // changes position of shadow
                     ),
                   ],
                 ),
