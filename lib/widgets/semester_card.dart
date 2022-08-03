@@ -35,7 +35,6 @@ class _SemesterCardState extends State<SemesterCard> {
           }
           else if (snapshot.hasError)
           {
-            print(snapshot.error);
             return Center(child: Text("Error: ${snapshot.error}"));
           }
           else
@@ -70,9 +69,7 @@ class _SemesterCardState extends State<SemesterCard> {
                             width: double.infinity,
                             child: Text(
                               "Semester ${snapshot.data?.semester}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
+                              style: Theme.of(context).textTheme.titleMedium,
                               textAlign: TextAlign.center,
                             ),
                           )),
@@ -95,8 +92,7 @@ class _SemesterCardState extends State<SemesterCard> {
                                 {
                                   return Text(
                                     "Credits Enrolled: ${snapshot.data?.toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                        fontSize: 15),
+                                    style: Theme.of(context).textTheme.bodyLarge,
                                   );
                                 }
                               },
@@ -117,8 +113,7 @@ class _SemesterCardState extends State<SemesterCard> {
                                 {
                                   return Text(
                                     "SGPA:  ${snapshot.data?.toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                        fontSize: 15),
+                                    style: Theme.of(context).textTheme.bodyLarge,
                                   );
                                 }
                               },

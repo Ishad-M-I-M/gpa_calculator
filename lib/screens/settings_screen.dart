@@ -24,10 +24,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ExpansionPanelList(
               children: [
                 ExpansionPanel(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
                     headerBuilder: (context, isOpen) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text("GPA values", style: TextStyle(fontSize: 18)),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("GPA values", style: Theme.of(context).textTheme.bodyMedium),
                       );
                     },
                     body: const GPAValueList(),

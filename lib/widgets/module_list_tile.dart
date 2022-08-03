@@ -14,12 +14,12 @@ class ModuleListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.all(8),
-      title: Text('${module.code} | ${module.name}'),
+      title: Text('${module.code} | ${module.name}', style: Theme.of(context).textTheme.titleMedium,),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Credits: ${module.credits}'),
-          Text('Grade: ${module.result}'),
+          Text('Credits: ${module.credits}', style: Theme.of(context).textTheme.bodySmall,),
+          Text('Grade: ${module.result}', style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
       trailing: IconButton(

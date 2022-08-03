@@ -49,12 +49,13 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Text("Semester"),
+                Text("Semester", style:Theme.of(context).textTheme.bodyMedium),
                 DropdownButton(
+                  dropdownColor: Theme.of(context).scaffoldBackgroundColor,
                   items: semesters
                       .map((e) => DropdownMenuItem(
                             value: e,
-                            child: Text(e.toString()),
+                            child: Text(e.toString(), style: Theme.of(context).textTheme.bodyMedium,),
                           ))
                       .toList(),
                   onChanged: (number) {
@@ -64,7 +65,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                     });
                   },
                   value: _semester == 0? null: _semester,
-                  hint: const Text("Select a number"),
+                  hint: Text("Select a number", style: Theme.of(context).textTheme.bodyMedium,),
                 ),
               ],
             ),
