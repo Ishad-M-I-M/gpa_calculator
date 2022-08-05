@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../db/SQLHelper.dart';
 import '../models/module.dart';
 
 import '../models/result.dart';
+
+import '../bloc/add_result/add_result_bloc.dart';
 
 class AddResultAlertDialog extends StatefulWidget {
   final Module module;
@@ -18,9 +21,6 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
   String selectedResult = "";
 
   void submitResult() async{
-      Module moduleUpdated = widget.module;
-      moduleUpdated.result = selectedResult.toString().trim();
-      widget.update(moduleUpdated);
       Navigator.of(context).pop();
   }
 
@@ -61,7 +61,18 @@ class _AddResultAlertDialogState extends State<AddResultAlertDialog> {
         },
       ),
       actions: [
-        TextButton(onPressed: submitResult, child: const Text("Add")),
+        BlocProvider(
+          create: (context) => AddResultBloc(),
+          child: BlocBuilder<AddResultBloc, AddResultState>(
+                  builder: (context, state) {
+                    return TextButton(onPressed:(){
+                      context.read<AddResultBloc>().add(ResultAdded(module: widget.module, result: selectedResult.toString().trim()));
+                      submitResult();
+                    } , child: const Text("Add"));
+                  },
+                ),
+        ),
+
         TextButton(
             onPressed: () {
               Navigator.of(context).pop();
