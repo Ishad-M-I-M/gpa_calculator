@@ -4,8 +4,12 @@ abstract class AddResultEvent{
   const AddResultEvent();
 }
 
-class ResultAdded extends AddResultEvent{
+class MountEvent extends AddResultEvent{
+  const MountEvent();
+}
+
+class SubmitEvent extends AddResultEvent{
   final Module module;
   final String result;
-  const ResultAdded({required this.module, required this.result});
+  const SubmitEvent({required this.module, required this.result});
 }
