@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../config/calculations.dart';
-import '../db/SQLHelper.dart';
-import '../models/module.dart';
-import '../models/semester.dart';
+import '../bloc/semester/semester_bloc.dart';
 
-class SemesterCard extends StatefulWidget {
+class SemesterCard extends StatelessWidget {
   final int semester;
   final Function onTap;
 
@@ -13,34 +11,20 @@ class SemesterCard extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<SemesterCard> createState() => _SemesterCardState();
-}
-
-class _SemesterCardState extends State<SemesterCard> {
-  Future<Semester> getSemester(int semester) async {
-    List<Module> moduleList =
-        await SQLHelper.getModulesWhere({"semester": semester.toString()});
-    return Semester(semester: semester, modules: moduleList);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Semester>(
-        initialData: Semester(semester: widget.semester, modules: []),
-        future: getSemester(widget.semester),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting)
-          {
-            return const Center(child: CircularProgressIndicator());
+    return BlocProvider<SemesterBloc>(
+        create: (context) => SemesterBloc(),
+        child:
+            BlocBuilder<SemesterBloc, SemesterState>(builder: (context, state) {
+          if (state is Initial) {
+            context.read<SemesterBloc>().add(LoadEvent(semester: semester));
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
-          else if (snapshot.hasError)
-          {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          }
-          else
-          {
+          if (state is Loaded) {
             return InkWell(
-              onTap: () => widget.onTap(context),
+              onTap: () => onTap(context),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
@@ -60,73 +44,40 @@ class _SemesterCardState extends State<SemesterCard> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                  padding:
+                      const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                           child: SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              "Semester ${snapshot.data?.semester}",
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                          )),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FutureBuilder<double>(
-                          initialData: 0.0,
-                          future: getEnrolledCredits(widget.semester),
-                              builder: (context, snapshot){
-                                if (snapshot.connectionState == ConnectionState.waiting)
-                                {
-                                  return const Center(child: CircularProgressIndicator());
-                                }
-                                else if (snapshot.hasError)
-                                {
-                                  return Center(child: Text("Error: ${snapshot.error}"));
-                                }
-                                else
-                                {
-                                  return Text(
-                                    "Credits Enrolled: ${snapshot.data?.toStringAsFixed(2)}",
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                  );
-                                }
-                              },
-                            ),
-                            FutureBuilder<double>(
-                              initialData: 0.0,
-                              future: getSGPA(widget.semester),
-                              builder: (context, snapshot){
-                                if (snapshot.connectionState == ConnectionState.waiting)
-                                {
-                                  return const Center(child: CircularProgressIndicator());
-                                }
-                                else if (snapshot.hasError)
-                                {
-                                  return Center(child: Text("Error: ${snapshot.error}"));
-                                }
-                                else
-                                {
-                                  return Text(
-                                    "SGPA:  ${snapshot.data?.toStringAsFixed(2)}",
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                  );
-                                }
-                              },
-                            ),
-                          ],
+                        width: double.infinity,
+                        child: Text(
+                          "Semester ${state.semester.semester}",
+                          style: Theme.of(context).textTheme.titleMedium,
+                          textAlign: TextAlign.center,
                         ),
+                      )),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Credits Enrolled: ${state.semester.credits.toStringAsFixed(2)}",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          Text(
+                            "SGPA:  ${state.semester.sgpa.toStringAsFixed(2)}",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
             );
           }
-        },
-    );
+          return Container();
+        }));
   }
 }
