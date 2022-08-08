@@ -1,76 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gpa_calculator/bloc/semester/semester_bloc.dart';
 
-import '../db/SQLHelper.dart';
-import '../models/module.dart';
-import '../models/semester.dart';
 import '../widgets/module_list_tile.dart';
 
-class SemesterScreen extends StatefulWidget {
+class SemesterScreen extends StatelessWidget {
   final int semester;
 
   const SemesterScreen({Key? key, required this.semester}) : super(key: key);
 
-  @override
-  State<SemesterScreen> createState() => _SemesterScreenState();
-}
-
-class _SemesterScreenState extends State<SemesterScreen> {
-  late Future<Semester> semester;
-
-  @override
-  void initState() {
-    super.initState();
-    semester = getSemester();
-  }
-
-  Future<Semester> getSemester() async {
-    List<Module> modules = await SQLHelper.getModulesWhere(
-        {"semester": widget.semester.toString()});
-    return Semester(semester: widget.semester, modules: modules);
-  }
-
-  Widget _getView(AsyncSnapshot<Semester> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
+  Widget _getView(BuildContext context, SemesterState state) {
+    if (state is Initial){
+      context.read<SemesterBloc>().add(LoadEvent(semester: semester));
       return const CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-      return Center(
-        child: Text("Error: ${snapshot.error}"),
-      );
-    } else if ((snapshot.data as Semester).modules.isEmpty) {
-      return const Center(
-        child: Text("No modules found"),
-      );
-    } else {
-      return ListView.builder(
-        itemCount: (snapshot.data as Semester).modules.length,
-        itemBuilder: (context, index) {
-          return ModuleListTile(
-            module: (snapshot.data as Semester).modules[index],
-          );
-        },
-      );
     }
-  }
-
-  Future<void> _refresh() async {
-    setState(() {
-      semester = getSemester();
-    });
+    else if (state is Loaded){
+      if(state.semester.modules.isEmpty){
+        return const Center(child: Text("No modules added"));
+      }
+      else{
+        return ListView.builder(
+                itemCount: state.semester.modules.length,
+                itemBuilder: (context, index) {
+                  return ModuleListTile(
+                    module: state.semester.modules[index],
+                  );
+                },
+              );
+      }
+    }
+    else{
+      return const Center(child: Text("Something went wrong"));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Semester ${widget.semester}"),
+          title: Text("Semester $semester"),
         ),
-        body: FutureBuilder<Semester>(
-          initialData: Semester(semester: widget.semester, modules: []),
-          future: getSemester(),
-          builder: (context, snapshot) {
-            return RefreshIndicator(
-                onRefresh: _refresh, child: _getView(snapshot));
-          },
-        ));
+        body: BlocProvider<SemesterBloc>(
+          create: (context) => SemesterBloc(),
+          child: BlocBuilder<SemesterBloc, SemesterState>(
+            builder: (context, state) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<SemesterBloc>().add(LoadEvent(semester: semester));
+                },
+                child: _getView(context, state),
+              );
+            },
+          ),
+        )
+    );
   }
 }
